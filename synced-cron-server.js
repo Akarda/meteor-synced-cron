@@ -24,7 +24,7 @@ SyncedCron = {
   }
 }
 
-Later = Npm.require('later');
+Later = Npm.require('@breejs/later');
 
 /*
   Logger factory function. Takes a prefix string and options object

@@ -1,4 +1,4 @@
-Later = Npm.require('later');
+Later = Npm.require('@breejs/later');
 
 Later.date.localTime(); // corresponds to SyncedCron.options.utc: true;
 
