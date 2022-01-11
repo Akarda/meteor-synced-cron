@@ -49,7 +49,7 @@ function createLogger(prefix) {
     check(level, Match.OneOf('info', 'error', 'warn', 'debug'));
     check(message, String);
 
-    var logger = SyncedCron.options && SyncedCron.options.logger;
+    const logger = SyncedCron.options && SyncedCron.options.logger
 
     if(logger && _.isFunction(logger)) {
 
@@ -65,10 +65,10 @@ function createLogger(prefix) {
   }
 }
 
-var log;
+let log
 
 Meteor.startup(function() {
-  var options = SyncedCron.options;
+  const options = SyncedCron.options
 
   log = createLogger('SyncedCron');
 
@@ -77,7 +77,7 @@ Meteor.startup(function() {
   });
 
   // Don't allow TTL less than 5 minutes so we don't break synchronization
-  var minTTL = 300;
+  const minTTL = 300
 
   // Use UTC or localtime for evaluating schedules
   if (options.utc)
@@ -98,13 +98,13 @@ Meteor.startup(function() {
   }
 });
 
-var scheduleEntry = function(entry) {
-  var schedule = entry.schedule(Later.parse);
+const scheduleEntry = function (entry) {
+  const schedule = entry.schedule(Later.parse)
   entry._timer =
-    SyncedCron._laterSetInterval(SyncedCron._entryWrapper(entry), schedule);
+    SyncedCron._laterSetInterval(SyncedCron._entryWrapper(entry), schedule)
 
   log.info('Scheduled "' + entry.name + '" next run @'
-    + Later.schedule(schedule).next(1));
+    + Later.schedule(schedule).next(1))
 }
 
 // add a scheduled job
@@ -136,7 +136,7 @@ SyncedCron.add = function(entry) {
 
 // Start processing added jobs
 SyncedCron.start = function() {
-  var self = this;
+  const self = this
 
   Meteor.startup(function() {
     // Schedule each job with later.js
@@ -149,7 +149,7 @@ SyncedCron.start = function() {
 
 // Return the next scheduled date of the first matching entry or undefined
 SyncedCron.nextScheduledAtDate = function(jobName) {
-  var entry = this._entries[jobName];
+  const entry = this._entries[jobName]
 
   if (entry)
     return Later.schedule(entry.schedule(Later.parse)).next(1);
@@ -157,7 +157,7 @@ SyncedCron.nextScheduledAtDate = function(jobName) {
 
 // Remove and stop the entry referenced by jobName
 SyncedCron.remove = function(jobName) {
-  var entry = this._entries[jobName];
+  const entry = this._entries[jobName]
 
   if (entry) {
     if (entry._timer)
@@ -190,13 +190,13 @@ SyncedCron.stop = function() {
 // The meat of our logic. Checks if the specified has already run. If not,
 // records that it's running the job, runs it, and records the output
 SyncedCron._entryWrapper = function(entry) {
-  var self = this;
+  const self = this
 
   return function(intendedAt) {
     intendedAt = new Date(intendedAt.getTime());
     intendedAt.setMilliseconds(0);
 
-    var jobHistory;
+    let jobHistory
 
     if (entry.persist) {
       jobHistory = {
@@ -218,13 +218,13 @@ SyncedCron._entryWrapper = function(entry) {
         }
 
         throw e;
-      };
+      }
     }
 
     // run and record the job
     try {
       log.info('Starting "' + entry.name + '".');
-      var output = entry.job(intendedAt,entry.name); // <- Run the actual job
+      const output = entry.job(intendedAt, entry.name) // <- Run the actual job
 
       log.info('Finished "' + entry.name + '".');
       if(entry.persist) {
@@ -267,8 +267,8 @@ SyncedCron._reset = function() {
 // From: https://github.com/bunkat/later/blob/master/src/core/setinterval.js
 SyncedCron._laterSetInterval = function(fn, sched) {
 
-  var t = SyncedCron._laterSetTimeout(scheduleTimeout, sched),
-      done = false;
+  let t = SyncedCron._laterSetTimeout(scheduleTimeout, sched),
+    done = false
 
   /**
   * Executes the specified function and then sets the timeout for the next
@@ -303,7 +303,7 @@ SyncedCron._laterSetInterval = function(fn, sched) {
 // From: https://github.com/bunkat/later/blob/master/src/core/settimeout.js
 SyncedCron._laterSetTimeout = function(fn, sched) {
 
-  var s = Later.schedule(sched), t;
+  let s = Later.schedule(sched), t
   scheduleTimeout();
 
   /**
@@ -312,15 +312,15 @@ SyncedCron._laterSetTimeout = function(fn, sched) {
   * attempting to schedule the timeout again.
   */
   function scheduleTimeout() {
-    var now = Date.now(),
-        next = s.next(2, now);
+    const now = Date.now(),
+      next = s.next(2, now)
 
     // don't schedlue another occurence if no more exist synced-cron#41
     if (! next[0])
       return;
 
-    var diff = next[0].getTime() - now,
-        intendedAt = next[0];
+    let diff = next[0].getTime() - now,
+      intendedAt = next[0]
 
     // minimum time to fire is one second, use next occurrence instead
     if(diff < 1000) {

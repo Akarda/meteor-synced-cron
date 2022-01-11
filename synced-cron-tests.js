@@ -2,15 +2,15 @@ Later = Npm.require('@breejs/later');
 
 Later.date.localTime(); // corresponds to SyncedCron.options.utc: true;
 
-var TestEntry = {
+const TestEntry = {
   name: 'Test Job',
-  schedule: function(parser) {
-    return parser.cron('15 10 * * ? *'); // not required
+  schedule: function (parser) {
+    return parser.cron('15 10 * * ? *') // not required
   },
-  job: function() {
-    return 'ran';
+  job: function () {
+    return 'ran'
   }
-};
+}
 
 Tinytest.add('Syncing works', function(test) {
   SyncedCron._reset();
@@ -20,19 +20,19 @@ Tinytest.add('Syncing works', function(test) {
   SyncedCron.add(TestEntry);
   test.equal(_.keys(SyncedCron._entries).length, 1);
 
-  var entry = SyncedCron._entries[TestEntry.name];
-  var intendedAt = new Date(); //whatever
+  const entry = SyncedCron._entries[TestEntry.name]
+  const intendedAt = new Date() //whatever
 
   // first run
   SyncedCron._entryWrapper(entry)(intendedAt);
   test.equal(SyncedCron._collection.find().count(), 1);
-  var jobHistory1 = SyncedCron._collection.findOne();
+  const jobHistory1 = SyncedCron._collection.findOne()
   test.equal(jobHistory1.result, 'ran');
 
   // second run
   SyncedCron._entryWrapper(entry)(intendedAt);
   test.equal(SyncedCron._collection.find().count(), 1); // should still be 1
-  var jobHistory2 = SyncedCron._collection.findOne();
+  const jobHistory2 = SyncedCron._collection.findOne()
   test.equal(jobHistory1._id, jobHistory2._id);
 });
 
@@ -45,13 +45,13 @@ Tinytest.add('Exceptions work', function(test) {
     })
   );
 
-  var entry = SyncedCron._entries[TestEntry.name];
-  var intendedAt = new Date(); //whatever
+  const entry = SyncedCron._entries[TestEntry.name]
+  const intendedAt = new Date() //whatever
 
   // error without result
   SyncedCron._entryWrapper(entry)(intendedAt);
   test.equal(SyncedCron._collection.find().count(), 1);
-  var jobHistory1 = SyncedCron._collection.findOne();
+  const jobHistory1 = SyncedCron._collection.findOne()
   test.equal(jobHistory1.result, undefined);
   test.matches(jobHistory1.error, /Haha, gotcha/);
 });
@@ -60,23 +60,23 @@ Tinytest.add('SyncedCron.nextScheduledAtDate works', function(test) {
   SyncedCron._reset();
   test.equal(SyncedCron._collection.find().count(), 0);
 
-  // addd 2 entries
+  // add 2 entries
   SyncedCron.add(TestEntry);
 
-  var entry2 = _.extend({}, TestEntry, {
+  const entry2 = _.extend({}, TestEntry, {
     name: 'Test Job2',
-    schedule: function(parser) {
-      return parser.cron('30 11 * * ? *');
+    schedule: function (parser) {
+      return parser.cron('30 11 * * ? *')
     }
-  });
+  })
   SyncedCron.add(entry2);
 
   test.equal(_.keys(SyncedCron._entries).length, 2);
 
   SyncedCron.start();
 
-  var date = SyncedCron.nextScheduledAtDate(entry2.name);
-  var correctDate = Later.schedule(entry2.schedule(Later.parse)).next(1);
+  const date = SyncedCron.nextScheduledAtDate(entry2.name)
+  const correctDate = Later.schedule(entry2.schedule(Later.parse)).next(1)
 
   test.equal(date, correctDate);
 });
@@ -86,15 +86,15 @@ Tinytest.add('SyncedCron.stop works', function(test) {
   SyncedCron._reset();
   test.equal(SyncedCron._collection.find().count(), 0);
 
-  // addd 2 entries
+  // add 2 entries
   SyncedCron.add(TestEntry);
 
-  var entry2 = _.extend({}, TestEntry, {
+  const entry2 = _.extend({}, TestEntry, {
     name: 'Test Job2',
-    schedule: function(parser) {
-      return parser.cron('30 11 * * ? *');
+    schedule: function (parser) {
+      return parser.cron('30 11 * * ? *')
     }
-  });
+  })
   SyncedCron.add(entry2);
 
   SyncedCron.start();
@@ -110,15 +110,15 @@ Tinytest.add('SyncedCron.pause works', function(test) {
   SyncedCron._reset();
   test.equal(SyncedCron._collection.find().count(), 0);
 
-  // addd 2 entries
+  // add 2 entries
   SyncedCron.add(TestEntry);
 
-  var entry2 = _.extend({}, TestEntry, {
+  const entry2 = _.extend({}, TestEntry, {
     name: 'Test Job2',
-    schedule: function(parser) {
-      return parser.cron('30 11 * * ? *');
+    schedule: function (parser) {
+      return parser.cron('30 11 * * ? *')
     }
-  });
+  })
   SyncedCron.add(entry2);
 
   SyncedCron.start();
@@ -149,14 +149,14 @@ Tinytest.add('SyncedCron.add starts by it self when running', function(test) {
 
   test.equal(SyncedCron.running, true);
 
-  // addd 1 entries
+  // add 1 entries
   SyncedCron.add(TestEntry);
 
   test.equal(_.keys(SyncedCron._entries).length, 1);
 
   SyncedCron.stop();
 
-  var intercepted = Log._intercepted();
+  const intercepted = Log._intercepted()
   test.equal(intercepted.length, 2);
 
   test.equal(SyncedCron.running, false);
@@ -182,12 +182,12 @@ Tinytest.add('SyncedCron.config can customize the options object', function(test
 Tinytest.addAsync('SyncedCron can log to injected logger', function(test, done) {
   SyncedCron._reset();
 
-  var logger = function() {
-    test.isTrue(true);
+  const logger = function () {
+    test.isTrue(true)
 
-    SyncedCron.stop();
-    done();
-  };
+    SyncedCron.stop()
+    done()
+  }
 
   SyncedCron.options.logger = logger;
 
@@ -200,15 +200,15 @@ Tinytest.addAsync('SyncedCron can log to injected logger', function(test, done) 
 Tinytest.addAsync('SyncedCron should pass correct arguments to logger', function(test, done) {
   SyncedCron._reset();
 
-  var logger = function(opts) {
-    test.include(opts, 'level');
-    test.include(opts, 'message');
-    test.include(opts, 'tag');
-    test.equal(opts.tag, 'SyncedCron');
+  const logger = function (opts) {
+    test.include(opts, 'level')
+    test.include(opts, 'message')
+    test.include(opts, 'tag')
+    test.equal(opts.tag, 'SyncedCron')
 
-    SyncedCron.stop();
-    done();
-  };
+    SyncedCron.stop()
+    done()
+  }
 
   SyncedCron.options.logger = logger;
 
@@ -219,10 +219,10 @@ Tinytest.addAsync('SyncedCron should pass correct arguments to logger', function
 
 });
 
-Tinytest.add('Single time schedules don\'t break', function(test) {
+Tinytest.add('Single time schedules don\'t break', function() {
   // create a once off date 1 sec in the future
-  var date = new Date(new Date().valueOf() + 1 * 1000);
-  var schedule = Later.parse.recur().on(date).fullDate();
+  const date = new Date(new Date().valueOf() + 1000)
+  const schedule = Later.parse.recur().on(date).fullDate()
 
   // this would throw without our patch for #41
   SyncedCron._laterSetTimeout(_.identity, schedule);
@@ -232,7 +232,7 @@ Tinytest.add('Single time schedules don\'t break', function(test) {
 Tinytest.add('Do not persist when flag is set to false', function (test) {
   SyncedCron._reset();
 
-  var testEntryNoPersist = _.extend({}, TestEntry, {persist: false});
+  const testEntryNoPersist = _.extend({}, TestEntry, { persist: false })
 
   SyncedCron.add(testEntryNoPersist);
 

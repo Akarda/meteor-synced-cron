@@ -1,6 +1,6 @@
 Package.describe({
-  summary: "Allows you to define and run scheduled jobs across multiple servers.",
-  version: "1.5.2",
+  summary: "Define and run scheduled jobs across multiple servers.",
+  version: "1.5.3",
   name: "akarda:synced-cron",
   git: "https://github.com/percolatestudio/meteor-synced-cron.git"
 });

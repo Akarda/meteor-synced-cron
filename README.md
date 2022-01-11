@@ -1,28 +1,31 @@
-# littledata:synced-cron
+# akarda:synced-cron
 
 A simple cron system for [Meteor](http://meteor.com). It supports syncronizing jobs between multiple processes. In other words, if you add a job that runs every hour and your deployment consists of multiple app servers, only one of the app servers will execute the job each time (whichever tries first).
 
-## Migrated from percolate:synced-cron littledata:synced-cron
+## Migrated from littledata:synced-cron akarda:synced-cron
 
-Since the original creator of the project could no longer maintain it, we had to migrate the package to another organisation to allow further maintenance and updates.
+Since the original creator of the project could no longer maintain it, and it would be nice to keep improve it.
+
+Thanks to the contribution of: zol, timbrandin, johanbrook, TheGame2500, SachaG, faburem, tmeasday, roelvan, Kurounin, grigio, richsilv, creitz, realyze, awesomepan, StorytellerCZ.
 
 To migrate you can simply run
 
 ``` sh
-$ meteor remove percolate:synced-cron && meteor add littledata:synced-cron
+$ meteor remove littledata:synced-cron && meteor add akarda:synced-cron
 ```
 
 ## Installation
 
 ``` sh
-$ meteor add littledata:synced-cron
+$ meteor add akarda:synced-cron
 ```
 
 ## API
 
 ### Basics
 
-To write a cron job, give it a unique name, a schedule and a function to run like below. SyncedCron uses the fantastic [later.js](http://bunkat.github.io/later/) library behind the scenes. A Later.js `parse` object is passed into the schedule call that gives you a huge amount of flexibility for scheduling your jobs, see the [documentation](http://bunkat.github.io/later/parsers.html#overview).
+To write a cron job, give it a unique name, a schedule and a 
+function to run like below. SyncedCron uses the fantastic [@breejs/later](https://breejs.github.io/later/) library behind the scenes. A @breejs/later `parse` object is passed into the schedule call that gives you a huge amount of flexibility for scheduling your jobs, see the [documentation](https://breejs.github.io/later/getting-started.html).
 
 ``` js
 SyncedCron.add({
