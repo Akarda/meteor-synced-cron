@@ -1,8 +1,6 @@
-# akarda:synced-cron
-
 A simple cron system for [Meteor](http://meteor.com). It supports syncronizing jobs between multiple processes. In other words, if you add a job that runs every hour and your deployment consists of multiple app servers, only one of the app servers will execute the job each time (whichever tries first).
 
-## Migrated from littledata:synced-cron akarda:synced-cron
+## Migrated from littledata:synced-cron to akarda:synced-cron
 
 Since the original creator of the project could no longer maintain it, and it would be nice to keep improve it.
 
